@@ -43,17 +43,21 @@ int main(int argc, char* argv[]) {
         return 0;
     }
     printf("STDOUT_FILENO:%d\n",STDOUT_FILENO);
-    close( STDOUT_FILENO );
-    int new_descriptor = dup(client_fd);
-    printf("new_descriptor:%d\n",new_descriptor);
+    close( STDOUT_FILENO );                          //关闭标准输出描述符
+    int new_descriptor = dup(client_fd);             //将client_fd复制到new_descriptor
+    printf("new_descriptor:%d\n",new_descriptor);    //输出new_descriptor值为 1（在客户端输出）
     if ( new_descriptor == 0 ) {
         printf(" dup() error\n");
         return 0;
     }
-    char *say_hello = "hello!!! ";
-    write(new_descriptor,say_hello,strlen(say_hello));
-    printf("%s\n",say_hello);     //该输出将被输出到client_fd。
+    char *say_hello_1 = "hello client_fd\n";
+    char *say_hello_2 = "hello new_descriptor\n";
+    char *say_hello_3 = "hello printf\n";
+    write(client_fd,say_hello_1,strlen(say_hello_1));     //写数据到cilent_fd
+    write(new_descriptor,say_hello_2,strlen(say_hello_2));//写数据到new_descriptor
+    printf("%s\n",say_hello_3);                           //该输出将被输出到client_fd。
     close(client_fd);
+    close(new_descriptor);
     close(listen_fd);
     return 0;
 }
